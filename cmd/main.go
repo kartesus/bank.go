@@ -14,5 +14,6 @@ func main() {
 	router := gin.Default()
 	router.POST("/accounts", accountManagement.CreateAccount)
 	router.GET("/accounts/:id", accountManagement.RetrieveAccount)
+	router.POST("/accounts/:id/deposits", accountManagement.ProcessDeposit)
 	router.Run(":8080")
 }

@@ -12,17 +12,19 @@ import (
 type accountManagementController struct {
 	createAccount   *domain.CreateAccountHandler
 	retrieveAccount *domain.RetrieveAccountHandler
+	processDeposit  *domain.ProcessDepositHandler
 }
 
 func NewAccountManagementController(platform *platform.Platform) *accountManagementController {
 	return &accountManagementController{
 		createAccount:   domain.NewCreateAccountHandler(platform.AccountStore),
 		retrieveAccount: domain.NewRetrieveAccountHandler(platform.AccountStore),
+		processDeposit:  domain.NewProcessDepositHandler(platform.AccountStore),
 	}
 }
 
 func (api accountManagementController) CreateAccount(c *gin.Context) {
-	var req map[string]any
+	var req map[string]string
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -37,4 +39,19 @@ func (api accountManagementController) RetrieveAccount(c *gin.Context) {
 
 	res := &retrieveAccountResponseHandler{c}
 	api.retrieveAccount.Handle(map[string]any{"id": id}, res)
+}
+
+func (api accountManagementController) ProcessDeposit(c *gin.Context) {
+	id := c.Param("id")
+
+	var req map[string]string
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	req["id"] = id
+
+	res := &processDepositResponseHandler{c}
+	api.processDeposit.Handle(req, res)
 }
