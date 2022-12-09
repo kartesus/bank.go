@@ -10,11 +10,15 @@ import (
 )
 
 type accountManagementController struct {
-	createAccount *domain.CreateAccountHandler
+	createAccount   *domain.CreateAccountHandler
+	retrieveAccount *domain.RetrieveAccountHandler
 }
 
 func NewAccountManagementController(platform *platform.Platform) *accountManagementController {
-	return &accountManagementController{createAccount: domain.NewCreateAccountHandler(platform.AccountStore)}
+	return &accountManagementController{
+		createAccount:   domain.NewCreateAccountHandler(platform.AccountStore),
+		retrieveAccount: domain.NewRetrieveAccountHandler(platform.AccountStore),
+	}
 }
 
 func (api accountManagementController) CreateAccount(c *gin.Context) {
@@ -26,4 +30,11 @@ func (api accountManagementController) CreateAccount(c *gin.Context) {
 
 	res := &createAccountResponseHandler{c}
 	api.createAccount.Handle(req, res)
+}
+
+func (api accountManagementController) RetrieveAccount(c *gin.Context) {
+	id := c.Param("id")
+
+	res := &retrieveAccountResponseHandler{c}
+	api.retrieveAccount.Handle(map[string]any{"id": id}, res)
 }

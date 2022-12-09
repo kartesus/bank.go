@@ -13,5 +13,6 @@ func main() {
 
 	router := gin.Default()
 	router.POST("/accounts", accountManagement.CreateAccount)
+	router.GET("/accounts/:id", accountManagement.RetrieveAccount)
 	router.Run(":8080")
 }
