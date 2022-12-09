@@ -13,6 +13,7 @@ func main() {
 
 	router := gin.Default()
 	router.POST("/accounts", accountManagement.CreateAccount)
+	router.GET("/accounts", accountManagement.ListAccounts)
 	router.GET("/accounts/:id", accountManagement.RetrieveAccount)
 	router.POST("/accounts/:id/deposits", accountManagement.ProcessDeposit)
 	router.POST("/accounts/:id/withdraws", accountManagement.ProcessWithdraw)

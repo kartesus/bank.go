@@ -5,4 +5,5 @@ type Store interface {
 	Put(id string, value map[string]any)
 	Delete(id string)
 	HasKey(id string) bool
+	GetAll() []map[string]any
 }

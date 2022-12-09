@@ -53,3 +53,7 @@ func (h *accountManagementResponseHandler) WithdrawProcessed(account map[string]
 func (h *accountManagementResponseHandler) AccountRetrieved(account map[string]any) {
 	h.c.JSON(http.StatusOK, account)
 }
+
+func (h *accountManagementResponseHandler) ListAccounts(accounts []map[string]any) {
+	h.c.JSON(http.StatusOK, accounts)
+}

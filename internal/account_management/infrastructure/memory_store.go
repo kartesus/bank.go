@@ -27,3 +27,11 @@ func (s *MemoryStore) HasKey(id string) bool {
 	_, found := s.Store[id]
 	return found
 }
+
+func (s *MemoryStore) GetAll() []map[string]any {
+	var all []map[string]any
+	for _, value := range s.Store {
+		all = append(all, value)
+	}
+	return all
+}
