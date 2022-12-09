@@ -16,5 +16,6 @@ func main() {
 	router.GET("/accounts/:id", accountManagement.RetrieveAccount)
 	router.POST("/accounts/:id/deposits", accountManagement.ProcessDeposit)
 	router.POST("/accounts/:id/withdraws", accountManagement.ProcessWithdraw)
+	router.POST("/accounts/:id/transfers", accountManagement.ProcessTransfer)
 	router.Run(":8080")
 }
