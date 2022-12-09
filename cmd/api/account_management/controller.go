@@ -5,27 +5,27 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/kartesus/bank.go/internal/account_management/domain"
+	uc "github.com/kartesus/bank.go/internal/account_management/use_cases"
 	"github.com/kartesus/bank.go/internal/platform"
 )
 
 type accountManagementController struct {
-	createAccount   *domain.CreateAccountHandler
-	retrieveAccount *domain.RetrieveAccountHandler
-	processDeposit  *domain.ProcessDepositHandler
-	processWithdraw *domain.ProcessWithdrawHandler
-	processTransfer *domain.ProcessTransferHandler
-	listAccounts    *domain.ListAccountsHandler
+	createAccount   *uc.CreateAccountHandler
+	retrieveAccount *uc.RetrieveAccountHandler
+	processDeposit  *uc.ProcessDepositHandler
+	processWithdraw *uc.ProcessWithdrawHandler
+	processTransfer *uc.ProcessTransferHandler
+	listAccounts    *uc.ListAccountsHandler
 }
 
 func NewAccountManagementController(platform *platform.Platform) *accountManagementController {
 	return &accountManagementController{
-		createAccount:   domain.NewCreateAccountHandler(platform.AccountStore),
-		retrieveAccount: domain.NewRetrieveAccountHandler(platform.AccountStore),
-		processDeposit:  domain.NewProcessDepositHandler(platform.AccountStore),
-		processWithdraw: domain.NewProcessWithdrawHandler(platform.AccountStore),
-		processTransfer: domain.NewProcessTransferHandler(platform.AccountStore),
-		listAccounts:    domain.NewListAccountsHandler(platform.AccountStore),
+		createAccount:   uc.NewCreateAccountHandler(platform.AccountStore),
+		retrieveAccount: uc.NewRetrieveAccountHandler(platform.AccountStore),
+		processDeposit:  uc.NewProcessDepositHandler(platform.AccountStore),
+		processWithdraw: uc.NewProcessWithdrawHandler(platform.AccountStore),
+		processTransfer: uc.NewProcessTransferHandler(platform.AccountStore),
+		listAccounts:    uc.NewListAccountsHandler(platform.AccountStore),
 	}
 }
 
@@ -36,15 +36,15 @@ func (api accountManagementController) CreateAccount(c *gin.Context) {
 		return
 	}
 
-	res := &accountManagementResponseHandler{c}
+	res := &accountManagementPresenter{c}
 	api.createAccount.Handle(req, res)
 }
 
 func (api accountManagementController) RetrieveAccount(c *gin.Context) {
 	id := c.Param("id")
 
-	res := &accountManagementResponseHandler{c}
-	api.retrieveAccount.Handle(map[string]any{"id": id}, res)
+	res := &accountManagementPresenter{c}
+	api.retrieveAccount.Handle(map[string]string{"id": id}, res)
 }
 
 func (api accountManagementController) ProcessDeposit(c *gin.Context) {
@@ -58,7 +58,7 @@ func (api accountManagementController) ProcessDeposit(c *gin.Context) {
 
 	req["id"] = id
 
-	res := &accountManagementResponseHandler{c}
+	res := &accountManagementPresenter{c}
 	api.processDeposit.Handle(req, res)
 }
 
@@ -73,7 +73,7 @@ func (api accountManagementController) ProcessWithdraw(c *gin.Context) {
 
 	req["id"] = id
 
-	res := &accountManagementResponseHandler{c}
+	res := &accountManagementPresenter{c}
 	api.processWithdraw.Handle(req, res)
 }
 
@@ -88,11 +88,11 @@ func (api accountManagementController) ProcessTransfer(c *gin.Context) {
 
 	req["originId"] = id
 
-	res := &accountManagementResponseHandler{c}
+	res := &accountManagementPresenter{c}
 	api.processTransfer.Handle(req, res)
 }
 
 func (api accountManagementController) ListAccounts(c *gin.Context) {
-	res := &accountManagementResponseHandler{c}
+	res := &accountManagementPresenter{c}
 	api.listAccounts.Handle(map[string]string{}, res)
 }

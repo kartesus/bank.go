@@ -6,7 +6,7 @@ import (
 	"github.com/kartesus/bank.go/internal/platform"
 )
 
-type ForHandlingProcessTransferResult interface {
+type ProcessTransferPresenter interface {
 	AccountNotFound(id string)
 	InvalidParam(paramName string, paramValue any, reason string)
 	InsufficientFunds(id string)
@@ -23,7 +23,7 @@ func NewProcessTransferHandler(store platform.Store) *ProcessTransferHandler {
 	return &ProcessTransferHandler{store: store}
 }
 
-func (h *ProcessTransferHandler) Handle(req map[string]string, res ForHandlingProcessTransferResult) {
+func (h *ProcessTransferHandler) Handle(req map[string]string, res ProcessTransferPresenter) {
 	originID := req["originId"]
 	destinationID := req["destinationId"]
 
@@ -75,9 +75,11 @@ func (h *ProcessTransferHandler) Handle(req map[string]string, res ForHandlingPr
 
 	fromAccount["balance"] = fromAccount["balance"].(int64) - amount
 	fromAccount["transactions"] = append(fromAccount["transactions"].([]map[string]any), map[string]any{"amount": -amount, "type": "transfer", "to": destinationID})
+	h.store.Put(originID, fromAccount)
 
 	toAccount["balance"] = toAccount["balance"].(int64) + amount
 	toAccount["transactions"] = append(toAccount["transactions"].([]map[string]any), map[string]any{"amount": amount, "type": "transfer", "from": originID})
+	h.store.Put(destinationID, toAccount)
 
 	res.TransferProcessed(fromAccount, toAccount, amount)
 }

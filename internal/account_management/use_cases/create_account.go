@@ -4,7 +4,7 @@ import (
 	"github.com/kartesus/bank.go/internal/platform"
 )
 
-type ForHandlingCreateAccountResult interface {
+type CreateAccountPresenter interface {
 	AccountAlreadyExists(id string)
 	AccountCreated(account map[string]any)
 	InvalidParam(paramName string, paramValue any, reason string)
@@ -18,7 +18,7 @@ func NewCreateAccountHandler(store platform.Store) *CreateAccountHandler {
 	return &CreateAccountHandler{store: store}
 }
 
-func (h *CreateAccountHandler) Handle(req map[string]string, res ForHandlingCreateAccountResult) {
+func (h *CreateAccountHandler) Handle(req map[string]string, res CreateAccountPresenter) {
 	id := req["id"]
 
 	if id == "" {

@@ -6,7 +6,7 @@ import (
 	"github.com/kartesus/bank.go/internal/platform"
 )
 
-type ForHandlingProcessWithdrawResult interface {
+type ProcessWithdrawPresenter interface {
 	AccountNotFound(id string)
 	InvalidParam(paramName string, paramValue any, reason string)
 	InsufficientFunds(id string)
@@ -21,7 +21,7 @@ func NewProcessWithdrawHandler(store platform.Store) *ProcessWithdrawHandler {
 	return &ProcessWithdrawHandler{store: store}
 }
 
-func (h *ProcessWithdrawHandler) Handle(req map[string]string, res ForHandlingProcessWithdrawResult) {
+func (h *ProcessWithdrawHandler) Handle(req map[string]string, res ProcessWithdrawPresenter) {
 	id := req["id"]
 
 	amount, err := strconv.ParseInt(req["amount"], 10, 64)

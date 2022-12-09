@@ -7,7 +7,7 @@ import (
 	"github.com/kartesus/bank.go/internal/platform"
 )
 
-type ForHandlingProcessDepositResult interface {
+type ProcessDepositPresenter interface {
 	AccountNotFound(id string)
 	InvalidParam(paramName string, paramValue any, reason string)
 	DepositProcessed(account map[string]any)
@@ -21,7 +21,7 @@ func NewProcessDepositHandler(store platform.Store) *ProcessDepositHandler {
 	return &ProcessDepositHandler{store: store}
 }
 
-func (h *ProcessDepositHandler) Handle(req map[string]string, res ForHandlingProcessDepositResult) {
+func (h *ProcessDepositHandler) Handle(req map[string]string, res ProcessDepositPresenter) {
 	id := req["id"]
 
 	amount, err := strconv.ParseInt(req["amount"], 10, 64)

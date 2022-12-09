@@ -2,7 +2,7 @@ package domain
 
 import "github.com/kartesus/bank.go/internal/platform"
 
-type ForHandlingRetrieveAccountResult interface {
+type RetrieveAccountPresenter interface {
 	AccountNotFound(id string)
 	AccountRetrieved(account map[string]interface{})
 	InvalidParam(paramName string, paramValue any, reason string)
@@ -16,8 +16,8 @@ func NewRetrieveAccountHandler(store platform.Store) *RetrieveAccountHandler {
 	return &RetrieveAccountHandler{store: store}
 }
 
-func (h *RetrieveAccountHandler) Handle(req map[string]interface{}, res ForHandlingRetrieveAccountResult) {
-	id := req["id"].(string)
+func (h *RetrieveAccountHandler) Handle(req map[string]string, res RetrieveAccountPresenter) {
+	id := req["id"]
 
 	if id == "" {
 		res.InvalidParam("id", id, "must not be empty")
