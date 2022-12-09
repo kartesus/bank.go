@@ -34,14 +34,14 @@ func (api accountManagementController) CreateAccount(c *gin.Context) {
 		return
 	}
 
-	res := &createAccountResponseHandler{c}
+	res := &accountManagementResponseHandler{c}
 	api.createAccount.Handle(req, res)
 }
 
 func (api accountManagementController) RetrieveAccount(c *gin.Context) {
 	id := c.Param("id")
 
-	res := &retrieveAccountResponseHandler{c}
+	res := &accountManagementResponseHandler{c}
 	api.retrieveAccount.Handle(map[string]any{"id": id}, res)
 }
 
@@ -56,7 +56,7 @@ func (api accountManagementController) ProcessDeposit(c *gin.Context) {
 
 	req["id"] = id
 
-	res := &processDepositResponseHandler{c}
+	res := &accountManagementResponseHandler{c}
 	api.processDeposit.Handle(req, res)
 }
 
@@ -71,7 +71,7 @@ func (api accountManagementController) ProcessWithdraw(c *gin.Context) {
 
 	req["id"] = id
 
-	res := &processWithdrawResponseHandler{c}
+	res := &accountManagementResponseHandler{c}
 	api.processWithdraw.Handle(req, res)
 }
 
@@ -86,6 +86,6 @@ func (api accountManagementController) ProcessTransfer(c *gin.Context) {
 
 	req["originId"] = id
 
-	res := &processTransferResponseHandler{c}
+	res := &accountManagementResponseHandler{c}
 	api.processTransfer.Handle(req, res)
 }

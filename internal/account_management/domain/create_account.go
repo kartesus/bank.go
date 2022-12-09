@@ -7,7 +7,7 @@ import (
 type ForHandlingCreateAccountResult interface {
 	AccountAlreadyExists(id string)
 	AccountCreated(account map[string]any)
-	InvalidParam(paramName string, paramValue string, reason string)
+	InvalidParam(paramName string, paramValue any, reason string)
 }
 
 type CreateAccountHandler struct {

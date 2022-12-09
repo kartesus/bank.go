@@ -5,7 +5,7 @@ import "github.com/kartesus/bank.go/internal/platform"
 type ForHandlingRetrieveAccountResult interface {
 	AccountNotFound(id string)
 	AccountRetrieved(account map[string]interface{})
-	InvalidParam(paramName string, paramValue string, reason string)
+	InvalidParam(paramName string, paramValue any, reason string)
 }
 
 type RetrieveAccountHandler struct {
