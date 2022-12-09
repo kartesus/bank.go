@@ -13,6 +13,7 @@ type accountManagementController struct {
 	createAccount   *domain.CreateAccountHandler
 	retrieveAccount *domain.RetrieveAccountHandler
 	processDeposit  *domain.ProcessDepositHandler
+	processWithdraw *domain.ProcessWithdrawHandler
 }
 
 func NewAccountManagementController(platform *platform.Platform) *accountManagementController {
@@ -20,6 +21,7 @@ func NewAccountManagementController(platform *platform.Platform) *accountManagem
 		createAccount:   domain.NewCreateAccountHandler(platform.AccountStore),
 		retrieveAccount: domain.NewRetrieveAccountHandler(platform.AccountStore),
 		processDeposit:  domain.NewProcessDepositHandler(platform.AccountStore),
+		processWithdraw: domain.NewProcessWithdrawHandler(platform.AccountStore),
 	}
 }
 
@@ -54,4 +56,19 @@ func (api accountManagementController) ProcessDeposit(c *gin.Context) {
 
 	res := &processDepositResponseHandler{c}
 	api.processDeposit.Handle(req, res)
+}
+
+func (api accountManagementController) ProcessWithdraw(c *gin.Context) {
+	id := c.Param("id")
+
+	var req map[string]string
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	req["id"] = id
+
+	res := &processWithdrawResponseHandler{c}
+	api.processWithdraw.Handle(req, res)
 }
