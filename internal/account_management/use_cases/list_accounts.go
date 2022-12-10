@@ -14,8 +14,8 @@ func NewListAccountsHandler(store platform.Store) *ListAccountsHandler {
 	return &ListAccountsHandler{store: store}
 }
 
-func (h *ListAccountsHandler) Handle(req map[string]string, res ListAccountPresenter) {
+func (h *ListAccountsHandler) Handle(req map[string]string, p ListAccountPresenter) {
 	accounts := h.store.GetAll()
 
-	res.ListAccounts(accounts)
+	p.ListAccounts(accounts)
 }

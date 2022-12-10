@@ -16,20 +16,20 @@ func NewRetrieveAccountHandler(store platform.Store) *RetrieveAccountHandler {
 	return &RetrieveAccountHandler{store: store}
 }
 
-func (h *RetrieveAccountHandler) Handle(req map[string]string, res RetrieveAccountPresenter) {
+func (h *RetrieveAccountHandler) Handle(req map[string]string, p RetrieveAccountPresenter) {
 	id := req["id"]
 
 	if id == "" {
-		res.InvalidParam("id", id, "must not be empty")
+		p.InvalidParam("id", id, "must not be empty")
 		return
 	}
 
 	account, ok := h.store.Get(id)
 
 	if !ok {
-		res.AccountNotFound(id)
+		p.AccountNotFound(id)
 		return
 	}
 
-	res.AccountRetrieved(account)
+	p.AccountRetrieved(account)
 }

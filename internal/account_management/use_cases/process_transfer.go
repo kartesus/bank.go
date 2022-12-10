@@ -23,53 +23,53 @@ func NewProcessTransferHandler(store platform.Store) *ProcessTransferHandler {
 	return &ProcessTransferHandler{store: store}
 }
 
-func (h *ProcessTransferHandler) Handle(req map[string]string, res ProcessTransferPresenter) {
+func (h *ProcessTransferHandler) Handle(req map[string]string, p ProcessTransferPresenter) {
 	originID := req["originId"]
 	destinationID := req["destinationId"]
 
 	if originID == destinationID {
-		res.TransferToSameAccount(originID)
+		p.TransferToSameAccount(originID)
 		return
 	}
 
 	amount, err := strconv.ParseInt(req["amount"], 10, 64)
 
 	if err != nil {
-		res.InvalidParam("amount", req["amount"], "must be a number")
+		p.InvalidParam("amount", req["amount"], "must be a number")
 		return
 	}
 
 	if originID == "" {
-		res.InvalidParam("originId", originID, "must not be empty")
+		p.InvalidParam("originId", originID, "must not be empty")
 		return
 	}
 
 	if destinationID == "" {
-		res.InvalidParam("destinationId", destinationID, "must not be empty")
+		p.InvalidParam("destinationId", destinationID, "must not be empty")
 		return
 	}
 
 	if amount <= 0 {
-		res.InvalidParam("amount", amount, "must be greater than zero")
+		p.InvalidParam("amount", amount, "must be greater than zero")
 		return
 	}
 
 	fromAccount, ok := h.store.Get(originID)
 
 	if !ok {
-		res.AccountNotFound(originID)
+		p.AccountNotFound(originID)
 		return
 	}
 
 	toAccount, ok := h.store.Get(destinationID)
 
 	if !ok {
-		res.TransferToNonExistingAccount(destinationID)
+		p.TransferToNonExistingAccount(destinationID)
 		return
 	}
 
 	if fromAccount["balance"].(int64) < amount {
-		res.InsufficientFunds(originID)
+		p.InsufficientFunds(originID)
 		return
 	}
 
@@ -81,5 +81,5 @@ func (h *ProcessTransferHandler) Handle(req map[string]string, res ProcessTransf
 	toAccount["transactions"] = append(toAccount["transactions"].([]map[string]any), map[string]any{"amount": amount, "type": "transfer", "from": originID})
 	h.store.Put(destinationID, toAccount)
 
-	res.TransferProcessed(fromAccount, toAccount, amount)
+	p.TransferProcessed(fromAccount, toAccount, amount)
 }

@@ -18,30 +18,30 @@ func NewCreateAccountHandler(store platform.Store) *CreateAccountHandler {
 	return &CreateAccountHandler{store: store}
 }
 
-func (h *CreateAccountHandler) Handle(req map[string]string, res CreateAccountPresenter) {
+func (h *CreateAccountHandler) Handle(req map[string]string, p CreateAccountPresenter) {
 	id := req["id"]
 
 	if id == "" {
-		res.InvalidParam("id", id, "must not be empty")
+		p.InvalidParam("id", id, "must not be empty")
 		return
 	}
 
 	if h.store.HasKey(id) {
-		res.AccountAlreadyExists(id)
+		p.AccountAlreadyExists(id)
 		return
 	}
 
 	customerName := req["customerName"]
 
 	if customerName == "" {
-		res.InvalidParam("customerName", customerName, "must not be empty")
+		p.InvalidParam("customerName", customerName, "must not be empty")
 		return
 	}
 
 	fiscalDocument := req["fiscalDocument"]
 
 	if fiscalDocument == "" {
-		res.InvalidParam("fiscalDocument", fiscalDocument, "must not be empty")
+		p.InvalidParam("fiscalDocument", fiscalDocument, "must not be empty")
 		return
 	}
 
@@ -54,5 +54,5 @@ func (h *CreateAccountHandler) Handle(req map[string]string, res CreateAccountPr
 	}
 
 	h.store.Put(id, entity)
-	res.AccountCreated(entity)
+	p.AccountCreated(entity)
 }
